@@ -75,6 +75,24 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordDto);
   }
 
+  // Alias endpoints for frontend compatibility
+  @Post('password-reset/request')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset (alias)' })
+  @ApiResponse({ status: 200, description: 'Password reset email sent' })
+  async passwordResetRequest(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('password-reset/confirm')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Confirm password reset (alias)' })
+  @ApiResponse({ status: 200, description: 'Password reset successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired token' })
+  async passwordResetConfirm(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
+  }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

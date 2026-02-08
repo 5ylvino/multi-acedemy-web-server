@@ -103,8 +103,34 @@ export class AuthService {
 
     const savedUser = await this.userRepository.save(user);
 
-    const { passwordHash: _, ...result } = savedUser;
-    return result;
+    // Generate tokens for auto-login after registration
+    const payload = {
+      sub: savedUser.id,
+      email: savedUser.email,
+      organizationId: savedUser.organizationId,
+      role: savedUser.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = await this.generateRefreshToken(savedUser.id);
+
+    // Store session in Redis
+    await this.redis.setex(`session:${savedUser.id}`, 900, accessToken);
+
+    const { passwordHash: _, ...userResult } = savedUser;
+    return {
+      user: {
+        id: userResult.id,
+        email: userResult.email,
+        name: userResult.name,
+        role: userResult.role,
+        organizationId: userResult.organizationId,
+        schoolLevel: userResult.schoolLevel,
+        permissions: userResult.permissions,
+      },
+      token: accessToken,
+      refresh_token: refreshToken.token,
+    };
   }
 
   async refreshToken(token: string) {

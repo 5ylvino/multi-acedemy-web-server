@@ -1,0 +1,21 @@
+{
+  "name": "ma-sms-backend",
+  "version": "1.0.0",
+  "description": "Multi-Academy School Management System - Backend Microservices",
+  "private": true,
+  "workspaces": [
+    "services/*"
+  ],
+  "scripts": {
+    "install:all": "yarn install",
+    "build:all": "yarn workspaces run build",
+    "start:all": "yarn workspaces run start:dev",
+    "lint:all": "yarn workspaces run lint",
+    "format:all": "yarn workspaces run format"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": ">=1.22.0"
+  },
+  "packageManager": "yarn@1.22.22"
+}
